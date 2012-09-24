@@ -1,25 +1,12 @@
-btn1.disabled = false;
-btn2.disabled = true;
 var pc;
 var localstream;
 
-function trace(text) {
-  // This function is used for logging.
-  text = (text.toSdp) ? text.toSdp() : text;
-
-  console.log((performance.webkitNow() / 1000).toFixed(3) ,  text);
-}
-
 function gotStream(stream){
-  trace("Received local stream");
   vid1.src = webkitURL.createObjectURL(stream);
   localstream = stream;
-  btn2.disabled = false;
 }
 
 function start() {
-  trace("Requesting local stream");
-  btn1.disabled = true;
   navigator.webkitGetUserMedia({audio:true, video:true},
                                gotStream, function() {});
 }
@@ -38,10 +25,8 @@ function call() {
   pc.startIce();
 }
 
-var calleeRemoteDesc = false;
 function clientIceCallback(candidate,bMore){
   if(candidate) {
-    trace(candidate);
     txtCandidates.value += JSON.stringify({label: candidate.label, candidate: candidate.toSdp()}) + "\n";
   }
 }
@@ -64,7 +49,6 @@ btnAnswer.onclick = answer;
 
 function initCaller() {
   pc = new webkitPeerConnection00("STUN stun.l.google.com:19302", clientIceCallback);
-  //pc = new webkitPeerConnection00(null, clientIceCallback);
 }
 
 initCaller();
