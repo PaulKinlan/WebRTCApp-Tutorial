@@ -4,7 +4,8 @@ Tutorial
 WebRTC is an API designed to make video and audio conferencing simple
 and available in all browsers.
 
-This is a tutorial on how to get started with WebRTC.
+This is a tutorial on how to get started with WebRTC.  For a more indepth view
+please read our [HTML5Rocks Tutorial](http://www.html5rocks.com/en/tutorials/webrtc/basics/#stun)
 
 Prerequistits
 -------------
