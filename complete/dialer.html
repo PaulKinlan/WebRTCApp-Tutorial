@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/styles/main.css" />
-<link rel="stylesheet" href="/styles/bootstrap.min.css" />
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="/styles/bootstrap.min.css" />
 </head>
 <body>
 <div id="container">
   <h2>Dialer</h2>
     <video id="vid1" autoplay></video>
     <fieldset> <legend>Step 1</legend>
-    <button id="btn1" class="btn">Start</button>
+    <button id="btn1" class="btn">Get Camera</button>
     <button id="btn2" class="btn">Call</button>
-    <p>Send this Offer to someone:</p>
+    <p>1. Offer: Send this token to someone</p>
     <textarea id=vid1txt rows=5></textarea>
-    <p>Then send list of candidates to the same person</p>
+    <p>2. Candidates: Send this too</p>
     <textarea id=txtCandidates rows=5></textarea>
   </fieldset>
   <fieldset><legend>Step 4</legend>
-    <p>Enter this Answer Offer:</p>
+    <p>1. Enter Answer Offer:</p>
     <textarea id=vid1answer rows=5></textarea>
-    <button id="btnAnswer" class="btn">Answer</button>
-    <p>Enter this Candidates:</p>
+    <button id="btnAnswer" class="btn">Process Answer Offer</button>
+    <p>2. Enter Reciever Candidates:</p>
     <textarea id=txtCandidateAnswer rows=5></textarea>
-    <button id="btnCandidates" class="btn">Go</button>
+    <button id="btnCandidates" class="btn">Process Answer Candidates</button>
   </fieldset>
   <script src="dialer.js"></script>
 </div> 
