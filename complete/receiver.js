@@ -1,14 +1,6 @@
 var pc;
 var localstream;
 
-function trace(text) {
-  // This function is used for logging.
-  if (text[text.length - 1] == '\n') {
-    text = text.substring(0, text.length - 1);
-  }
-  console.log((performance.webkitNow() / 1000).toFixed(3) + ": " + text);
-}
-
 function pickup() {
   var offer = new SessionDescription(vid2txt.value);
   pc.setRemoteDescription(pc.SDP_OFFER, offer);
@@ -20,20 +12,18 @@ function pickup() {
   pc.startIce();
 }
 
+btnPickup.onclick = pickup; 
+
 function gotRemoteStream(e){
   vid2.src = webkitURL.createObjectURL(e.stream);
-  trace("Received remote stream");
 }
 
-var calleeRemoteDesc = false;
 function iceCallback(candidate,bMore){
   if(candidate) {
-    trace(candidate);
     txtAnswerCandidates.value += JSON.stringify({label: candidate.label, candidate: candidate.toSdp()}) + "\n";
   }
 }
 
-btnPickup.onclick = pickup; 
 btnCandidates.onclick = function() {
   // Negotiate the routes to connect across.
   var candidates = txtCandidates.value.split('\n');

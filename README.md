@@ -65,6 +65,9 @@ Choose any one file to start with.  Make it random and then choose the correct C
 Dialer
 ======
 
+The Dialer is the page that will make the call to another participant.  The dialer in this
+app will only send video and audio, it will not recieve it from the Reciever.
+
 Initialize WebRTC
 -----------------
 
@@ -189,4 +192,80 @@ If all has gone well you should be able to connect to the completed receiver.
 Reciever
 ========
 
+The Receiver is the thing that gets called.  It can be on your computer directly or it can be
+somewhere else on the web.
 
+Initialize WebRTC
+-----------------
+
+To use the WebRTC framework, we need to first create the webkitPeerConnection00 object.  This
+will allow us to talk to other machines.  Interestingly there is an onsaddstream event on the 
+PeerConnection object, this is called whenever a remote stream has connected - in our case we 
+are simply hooking the video stream up to the video element (note in the HTML the video element
+has the autoplay attribute already set so if all goes well you will see the other participant)
+
+There is a callback that will preocess "candidate" messages, these are notification about the
+supported codecs and addresses that the other peer should try and talk to.
+
+    var pc; // Global Peer Connection object
+
+    // The ICE Framework will pass candidate messages here.  
+    function clientIceCallback(candidate,bMore) {
+      if(candidate) {
+        txtAnswerCandidates.value += JSON.stringify({label: candidate.label, candidate: candidate.toSdp()}) + "\n";
+      }
+    }
+
+    function gotRemoteStream(e){
+      vid2.src = webkitURL.createObjectURL(e.stream);
+    }
+
+    // Create the peer connection and connect to Stun Server
+    function initCallee() {
+      pc = new webkitPeerConnection00("STUN stun.l.google.com:19302", clientIceCallback);
+      pc.onaddstream = gotRemoteStream; 
+    }
+
+    initCallee();
+
+This app doesn't need access to the web cam, so we have no need to request it
+
+Recieving the call
+------------------
+
+In a tradtional app some other infrastructure would handle the exchange of Offer tokens.
+In our case, this is you! The pickup function will read the text from vid2txt element and create 
+an Answer Offer, set the outgoing stream to be the answer and then start the Ice Dance (still gets me).
+
+    function pickup() {
+      var offer = new SessionDescription(vid2txt.value);
+      pc.setRemoteDescription(pc.SDP_OFFER, offer);
+      var answerOffer = pc.createAnswer(offer.toSdp(),
+                                {has_audio:true, has_video:true});
+      pc.setLocalDescription(pc.SDP_ANSWER, answerOffer);
+      vid2answer.value = answerOffer.toSdp();
+
+      pc.startIce();
+    }
+
+    btnPickup.onclick = pickup; 
+
+The above code will create an Answer offer which must be copied into the Dialer.
+
+Processing Candidates
+---------------------
+
+Before there is a meaningful connection the Reciever must process all the candidate
+routes that the Dialer has determined are available.  This is very similar to the Dialer
+code:  We take a list of candidate objects, parse them (1 per line) and process them.
+
+    btnCandidates.onclick = function() {
+      // Negotiate the routes to connect across.
+      var candidates = txtCandidates.value.split('\n');
+      for(var i = 0; i < candidates.length; i++) {
+        if(candidates[i].length <= 1) return; 
+          var msg = JSON.parse(candidates[i]);
+          var candidate = new IceCandidate(msg.label, msg.candidate);
+          pc.processIceMessage(candidate);
+      }
+    };
